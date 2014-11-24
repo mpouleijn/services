@@ -50,8 +50,10 @@ module Services
         @service_args = args
         super
       ensure
-        Services.configuration.redis.del @uniqueness_keys unless @uniqueness_keys.nil? || @uniqueness_keys.empty?
-        Services.configuration.redis.del error_count_key
+        unless Services.configuration.redis
+          Services.configuration.redis.del @uniqueness_keys unless @uniqueness_keys.nil? || @uniqueness_keys.empty?
+          Services.configuration.redis.del error_count_key
+        end
       end
 
       private
