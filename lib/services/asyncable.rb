@@ -7,11 +7,6 @@ rescue LoadError
   raise Services::BackgroundProcessorNotFound
 end
 
-begin
-  require 'sidetiq'
-rescue LoadError
-end
-
 module Services
   module Asyncable
     extend ActiveSupport::Concern
@@ -21,7 +16,6 @@ module Services
 
     included do
       include Sidekiq::Worker
-      include Sidetiq::Schedulable if defined?(Sidetiq)
     end
 
     module ClassMethods
@@ -52,25 +46,6 @@ module Services
       end
 
       target.send *args
-    end
-
-    def own_worker
-      return @own_worker if defined?(@own_worker)
-      @own_worker = if self.jid.nil?
-        nil
-      else
-        own_worker = Sidekiq::Workers.new.detect do |_, _, work|
-          work['payload']['jid'] == self.jid
-        end
-        raise self.class::Error, "Could not find own worker with jid #{self.jid}: #{Sidekiq::Workers.new.map { |*args| args }}" if own_worker.nil?
-        own_worker
-      end
-    end
-
-    def sibling_workers
-      @sibling_workers ||= Sidekiq::Workers.new.select do |_, _, work|
-        work['payload']['class'] == self.class.to_s && (own_worker.nil? || work['payload']['jid'] != own_worker[2]['payload']['jid'])
-      end
     end
   end
 end
