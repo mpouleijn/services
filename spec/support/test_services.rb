@@ -1,4 +1,4 @@
-require 'services/base_finder'
+require 'services/query'
 
 class Model
   class << self
@@ -42,7 +42,7 @@ end
 
 module Services
   module Models
-    class BaseFind < Services::BaseFinder
+    class Query < Services::Query
       private
 
       def process(scope, conditions)
@@ -65,6 +65,18 @@ module Services
     class FindObjectTest < Services::Base
       def call(id_or_object)
         find_object id_or_object
+      end
+    end
+
+    class FindIdsTest < Services::Base
+      def call(ids_or_objects)
+        find_ids ids_or_objects
+      end
+    end
+
+    class FindIdTest < Services::Base
+      def call(id_or_object)
+        find_id id_or_object
       end
     end
   end
@@ -105,15 +117,19 @@ end
 class UniqueService < Services::Base
   def call(on_error, sleep)
     check_uniqueness on_error: on_error
+    do_work
     sleep 0.5 if sleep
   end
+  def do_work; end
 end
 
 class UniqueWithCustomArgsService < Services::Base
   def call(uniqueness_arg1, uniqueness_arg2, ignore_arg, on_error, sleep)
     check_uniqueness uniqueness_arg1, uniqueness_arg2, on_error: on_error
+    do_work
     sleep 0.5 if sleep
   end
+  def do_work; end
 end
 
 class UniqueMultipleService < Services::Base
@@ -121,14 +137,18 @@ class UniqueMultipleService < Services::Base
     args.each do |arg|
       check_uniqueness arg, on_error: on_error
     end
+    do_work
     sleep 0.5 if sleep
   end
+  def do_work; end
 end
 
 class NonUniqueService < Services::Base
   def call(on_error, sleep)
+    do_work
     sleep 0.5 if sleep
   end
+  def do_work; end
 end
 
 class NestedExceptionService < Services::Base

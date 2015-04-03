@@ -1,3 +1,30 @@
+## 3.0.1
+
+* Fix for Ruby 2.0
+
+## 3.0.0
+
+* Rename `BaseFinder` to `Query`
+* `Query` doesn't inherit from `Base` anymore
+* Only use SQL subquery in `Query` if a JOIN is used
+
+## 2.2.4
+
+* Increase TTL for Redis keys for uniqueness and error count to one day
+* Fix ordering in `BaseFinder`
+
+## 2.2.3
+
+* Add `on_error` option `return` to uniqueness checker
+
+## 2.1.0
+
+* Add `find_ids` and `find_id` helpers to base service
+
+## 2.0.2
+
+* Make BaseFinder smarter, don't create SQL subquery if not necessary
+
 ## 2.0.1
 
 * Fix disabling call logging

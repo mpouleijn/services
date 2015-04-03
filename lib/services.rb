@@ -6,7 +6,6 @@ module Services
   BackgroundProcessorNotFound = Class.new(StandardError)
 
   with_configuration do
-    has :host, classes: String
     has :logger
     has :redis
   end
@@ -21,6 +20,8 @@ rescue Services::BackgroundProcessorNotFound
 end
 require_relative 'services/modules/call_logger'
 require_relative 'services/modules/exception_wrapper'
+require_relative 'services/modules/object_class'
 require_relative 'services/modules/uniqueness_checker'
 require_relative 'services/base'
+require_relative 'services/query'
 require_relative 'services/railtie' if defined?(Rails)
