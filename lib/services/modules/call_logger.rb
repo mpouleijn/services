@@ -28,7 +28,6 @@ module Services
       end
 
       def call(*args)
-        return super if Services.configuration.logger.nil?
         unless self.class.call_logging_disabled
           log "START with args: #{args}", caller: caller
           start = Time.now
@@ -45,10 +44,6 @@ module Services
       end
 
       private
-
-      def log(message, meta = {}, severity = 'info')
-        Services.configuration.logger.log message, meta.merge(service: self.class.to_s, id: @id), severity
-      end
 
       def exception_message(e)
         message = "#{e.class}: #{e.message}"
